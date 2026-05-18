@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clinica Sănătate Plus — Dashboard Programări</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f8f7f4;
+    --surface: #ffffff;
+    --surface2: #f1f0ed;
+    --border: rgba(0,0,0,0.08);
+    --border2: rgba(0,0,0,0.14);
+    --text: #1a1917;
+    --text2: #6b6a66;
+    --text3: #9b9a96;
+    --radius: 10px;
+    --radius-lg: 14px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111110;
+      --surface: #1c1c1a;
+      --surface2: #252523;
+      --border: rgba(255,255,255,0.08);
+      --border2: rgba(255,255,255,0.14);
+      --text: #f0efe9;
+      --text2: #9b9a96;
+      --text3: #6b6a66;
+    }
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .topbar {
+    background: var(--surface);
+    border-bottom: 0.5px solid var(--border2);
+    padding: 0 1.5rem;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .clinic-logo {
+    width: 32px;
+    height: 32px;
+    background: #378ADD;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 16px;
+  }
+
+  .clinic-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .clinic-sub {
+    font-size: 12px;
+    color: var(--text3);
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .badge {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-weight: 500;
+  }
+
+  .main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+  }
+
+  .stat-icon {
+    font-size: 18px;
+    color: var(--text3);
+    margin-bottom: 8px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--text2);
+    margin-bottom: 4px;
+  }
+
+  .stat-value {
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .stat-sub {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 2px;
+  }
+
+  .cal-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .cal-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .cal-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 0.5px solid var(--border2);
+    background: var(--surface);
+    color: var(--text2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: background 0.1s;
+  }
+
+  .nav-btn:hover { background: var(--surface2); }
+
+  .week-label {
+    font-size: 13px;
+    color: var(--text2);
+    min-width: 180px;
+    text-align: center;
+  }
+
+  .filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    border: 0.5px solid var(--border2);
+    background: var(--surface);
+    color: var(--text2);
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .filter-btn:hover { background: var(--surface2); }
+  .filter-btn.active { color: white; border-color: transparent; }
+
+  .filter-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text2);
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .cal-wrap {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .cal-grid {
+    display: grid;
+    grid-template-columns: 52px repeat(7, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--border);
+  }
+
+  .cal-day-header {
+    background: var(--surface2);
+    font-size: 11px;
+    color: var(--text2);
+    text-align: center;
+    padding: 8px 4px;
+    font-weight: 500;
+  }
+
+  .cal-day-header.today {
+    color: #378ADD;
+    font-weight: 600;
+  }
+
+  .cal-time {
+    background: var(--surface);
+    font-size: 10px;
+    color: var(--text3);
+    text-align: right;
+    padding: 4px 6px 0 0;
+    height: 38px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+  }
+
+  .cal-cell {
+    background: var(--surface);
+    height: 38px;
+    position: relative;
+    cursor: pointer;
+    transition: opacity 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    overflow: hidden;
+  }
+
+  .cal-cell:hover { opacity: 0.85; }
+  .cal-cell.closed { background: var(--bg); cursor: default; opacity: 1; }
+  .cal-cell.available { background: var(--surface); }
+
+  .cell-inner {
+    text-align: center;
+    line-height: 1.2;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .cell-inner.booked-cell {
+    color: white;
+    font-size: 9px;
+    font-weight: 500;
+  }
+
+  .cell-inner.avail-cell {
+    font-size: 9px;
+    opacity: 0.7;
+  }
+
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    border: 0.5px solid var(--border2);
+    padding: 1.5rem;
+    width: 340px;
+    max-width: 92vw;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+  }
+
+  .modal-title {
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .modal-close-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 0.5px solid var(--border2);
+    background: transparent;
+    color: var(--text2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  .modal-close-btn:hover { background: var(--surface2); }
+
+  .modal-doctor-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.75rem;
+    background: var(--surface2);
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+  }
+
+  .doctor-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 500;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .doctor-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .doctor-spec { font-size: 11px; color: var(--text3); }
+
+  .modal-rows { margin-bottom: 1rem; }
+
+  .modal-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    padding: 6px 0;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .modal-row:last-child { border-bottom: none; }
+  .modal-row-label { color: var(--text2); }
+  .modal-row-value { font-weight: 500; color: var(--text); text-align: right; max-width: 60%; }
+
+  .status-badge {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+
+  .status-confirmed { background: #e8f5e9; color: #2e7d32; }
+  .status-available { background: #e3f2fd; color: #1565c0; }
+
+  .modal-action {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: 0.5px solid var(--border2);
+    background: transparent;
+    color: var(--text);
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+
+  .modal-action:hover { background: var(--surface2); }
+
+  .price-tag {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text3);
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="clinic-logo"><i class="ti ti-activity-heartbeat"></i></div>
+    <div>
+      <div class="clinic-name">Clinica Sănătate Plus</div>
+      <div class="clinic-sub">București, Sector 1</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span class="badge"><i class="ti ti-wifi" style="font-size:11px;vertical-align:-1px;margin-right:3px"></i>Agent AI activ</span>
+  </div>
+</div>
+
+<div class="main">
+  <div class="stats" id="statsBar"></div>
+
+  <div class="cal-header-row">
+    <div class="cal-title" id="calTitle">Programări săptămânale</div>
+    <div class="cal-nav">
+      <button class="nav-btn" id="prevBtn" aria-label="Săptămâna precedentă"><i class="ti ti-chevron-left"></i></button>
+      <span class="week-label" id="weekLabel"></span>
+      <button class="nav-btn" id="nextBtn" aria-label="Săptămâna următoare"><i class="ti ti-chevron-right"></i></button>
+    </div>
+  </div>
+
+  <div class="filters" id="filterBar"></div>
+
+  <div class="legend" id="legendBar"></div>
+
+  <div class="cal-wrap">
+    <div class="cal-grid" id="calGrid"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">Detalii</span>
+      <button class="modal-close-btn" id="modalCloseBtn" aria-label="Închide"><i class="ti ti-x"></i></button>
+    </div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+const DOCTORS = [
+  { id: 0, name: 'Dr. Ionescu Alexandru', initials: 'IA', short: 'Ionescu', specialty: 'Endocrinolog', days: [1,3,5], start: 9, end: 17, color: '#378ADD' },
+  { id: 1, name: 'Dr. Popescu Maria', initials: 'PM', short: 'Popescu', specialty: 'Dermatolog', days: [2,4,6], start: 10, end: 18, color: '#D4537E' },
+  { id: 2, name: 'Dr. Constantin Elena', initials: 'CE', short: 'Constantin', specialty: 'Ginecolog', days: [1,2,4], start: 8, end: 16, color: '#1D9E75' },
+  { id: 3, name: 'Dr. Moldovan Andrei', initials: 'MA', short: 'Moldovan', specialty: 'Cardiolog', days: [3,4,5], start: 9, end: 17, color: '#BA7517' }
+];
+
+const SERVICES = [
+  { name: 'Consultație endocrinologie', price: 300, duration: 40, doctorId: 0 },
+  { name: 'Control periodic endocrinologie', price: 200, duration: 20, doctorId: 0 },
+  { name: 'Consultație dermatologie', price: 280, duration: 40, doctorId: 1 },
+  { name: 'Dermoscopie', price: 350, duration: 45, doctorId: 1 },
+  { name: 'Tratament dermatologic', price: 400, duration: 60, doctorId: 1 },
+  { name: 'Consultație ginecologie', price: 320, duration: 40, doctorId: 2 },
+  { name: 'Ecografie ginecologică', price: 250, duration: 30, doctorId: 2 },
+  { name: 'Consultație cardiologie', price: 350, duration: 45, doctorId: 3 },
+  { name: 'EKG', price: 150, duration: 20, doctorId: 3 },
+  { name: 'Ecocardiografie', price: 450, duration: 45, doctorId: 3 },
+  { name: 'Ecografie abdominală', price: 200, duration: 30, doctorId: null },
+  { name: 'Ecografie tiroidiană', price: 180, duration: 20, doctorId: null },
+  { name: 'Radiografie toracică', price: 120, duration: 15, doctorId: null },
+  { name: 'Holter EKG 24h', price: 350, duration: 20, doctorId: 3 },
+  { name: 'Densitometrie osoasă', price: 280, duration: 30, doctorId: null }
+];
+
+const PATIENTS = ['Ana Dumitrescu','Ion Popescu','Maria Ionescu','Gheorghe Stan','Elena Marin','Cristina Popa','Alexandru Radu','Mihaela Nicu','Daniela Florea','Bogdan Ciobanu'];
+const DAY_SHORT = ['Dum','Lun','Mar','Mie','Joi','Vin','Sâm'];
+const MONTHS = ['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'];
+const MONTHS_FULL = ['Ianuarie','Februarie','Martie','Aprilie','Mai','Iunie','Iulie','August','Septembrie','Octombrie','Noiembrie','Decembrie'];
+
+let weekOffset = 0;
+let activeFilter = -1;
+
+function seed(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = Math.imul(31, h) + str.charCodeAt(i) | 0;
+  return Math.abs(h);
+}
+
+function isBooked(doctorId, dateStr, hour) {
+  return seed(doctorId + '-' + dateStr + '-' + hour) % 4 === 0;
+}
+
+function getBooking(doctorId, dateStr, hour) {
+  const s = seed(doctorId + '-' + dateStr + '-' + hour);
+  const doc = DOCTORS[doctorId];
+  const svc = SERVICES.filter(sv => sv.doctorId === doctorId || sv.doctorId === null);
+  return {
+    patient: PATIENTS[s % PATIENTS.length],
+    service: svc[s % svc.length],
+    doctor: doc,
+    date: dateStr,
+    time: String(hour).padStart(2,'0') + ':00'
+  };
+}
+
+function getWeekStart(offset) {
+  const d = new Date();
+  const dow = d.getDay();
+  const diff = d.getDate() - dow + (dow === 0 ? -6 : 1);
+  d.setDate(diff + offset * 7);
+  d.setHours(0,0,0,0);
+  return d;
+}
+
+function render() {
+  const ws = getWeekStart(weekOffset);
+  const we = new Date(ws); we.setDate(we.getDate() + 6);
+  document.getElementById('weekLabel').textContent =
+    ws.getDate() + ' ' + MONTHS[ws.getMonth()] + ' – ' +
+    we.getDate() + ' ' + MONTHS[we.getMonth()] + ' ' + we.getFullYear();
+
+  const days = Array.from({length:7}, (_,i) => { const d = new Date(ws); d.setDate(d.getDate()+i); return d; });
+
+  let booked=0, available=0, revenue=0;
+  DOCTORS.forEach(doc => {
+    days.forEach(day => {
+      if (!doc.days.includes(day.getDay())) return;
+      const ds = day.toISOString().split('T')[0];
+      for (let h = doc.start; h < doc.end; h++) {
+        if (isBooked(doc.id, ds, h)) { booked++; revenue += getBooking(doc.id,ds,h).service.price; }
+        else available++;
+      }
+    });
+  });
+
+  document.getElementById('statsBar').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-icon"><i class="ti ti-calendar-check" aria-hidden="true"></i></div>
+      <div class="stat-label">Programări săptămână</div>
+      <div class="stat-value">${booked}</div>
+      <div class="stat-sub">din ${booked+available} sloturi totale</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon"><i class="ti ti-calendar-plus" aria-hidden="true"></i></div>
+      <div class="stat-label">Sloturi disponibile</div>
+      <div class="stat-value">${available}</div>
+      <div class="stat-sub">pentru programare</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon"><i class="ti ti-coin" aria-hidden="true"></i></div>
+      <div class="stat-label">Venit estimat</div>
+      <div class="stat-value">${revenue.toLocaleString('ro-RO')}</div>
+      <div class="stat-sub">RON săptămâna aceasta</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon"><i class="ti ti-chart-pie" aria-hidden="true"></i></div>
+      <div class="stat-label">Grad ocupare</div>
+      <div class="stat-value">${Math.round(booked/(booked+available)*100)}%</div>
+      <div class="stat-sub">față de capacitate</div>
+    </div>
+  `;
+
+  const fb = document.getElementById('filterBar');
+  fb.innerHTML = `<button class="filter-btn${activeFilter===-1?' active':''}" style="${activeFilter===-1?'background:#444;':''}" data-f="-1"><i class="ti ti-users" style="font-size:12px"></i> Toți medicii</button>` +
+    DOCTORS.map(d => `<button class="filter-btn${activeFilter===d.id?' active':''}" style="${activeFilter===d.id?'background:'+d.color+';':''}" data-f="${d.id}"><span class="filter-dot" style="background:${d.color}"></span>${d.short}</button>`).join('');
+  fb.querySelectorAll('.filter-btn').forEach(btn => btn.addEventListener('click', () => { activeFilter=parseInt(btn.dataset.f); render(); }));
+
+  document.getElementById('legendBar').innerHTML = DOCTORS.map(d =>
+    `<div class="legend-item"><div class="legend-dot" style="background:${d.color}"></div>${d.name} — ${d.specialty}</div>`
+  ).join('') + `<div class="legend-item"><div class="legend-dot" style="background:var(--border2)"></div>Slot disponibil</div>`;
+
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+
+  const corner = document.createElement('div');
+  corner.className = 'cal-day-header';
+  corner.style.background = 'var(--surface2)';
+  grid.appendChild(corner);
+
+  const today = new Date().toDateString();
+  days.forEach(day => {
+    const el = document.createElement('div');
+    el.className = 'cal-day-header' + (day.toDateString()===today?' today':'');
+    el.innerHTML = DAY_SHORT[day.getDay()] + '<br><span style="font-size:13px;font-weight:600">' + day.getDate() + '</span>';
+    grid.appendChild(el);
+  });
+
+  const allHours = new Set();
+  DOCTORS.forEach(doc => {
+    if (activeFilter !== -1 && doc.id !== activeFilter) return;
+    for (let h=doc.start; h<doc.end; h++) allHours.add(h);
+  });
+
+  Array.from(allHours).sort((a,b)=>a-b).forEach(hour => {
+    const tl = document.createElement('div');
+    tl.className = 'cal-time';
+    tl.textContent = String(hour).padStart(2,'0')+':00';
+    grid.appendChild(tl);
+
+    days.forEach(day => {
+      const dow = day.getDay();
+      const ds = day.toISOString().split('T')[0];
+      const cell = document.createElement('div');
+      const docs = DOCTORS.filter(doc => {
+        if (activeFilter !== -1 && doc.id !== activeFilter) return false;
+        return doc.days.includes(dow) && hour >= doc.start && hour < doc.end;
+      });
+
+      if (!docs.length) {
+        cell.className = 'cal-cell closed';
+        grid.appendChild(cell);
+        return;
+      }
+
+      const bookedDocs = docs.filter(doc => isBooked(doc.id, ds, hour));
+
+      if (bookedDocs.length > 0) {
+        const doc = bookedDocs[0];
+        const b = getBooking(doc.id, ds, hour);
+        cell.className = 'cal-cell booked';
+        cell.style.background = doc.color;
+        cell.innerHTML = `<div class="cell-inner booked-cell">${b.patient.split(' ')[0]}<br>${doc.short}</div>`;
+        cell.addEventListener('click', () => showBookingModal(b));
+      } else {
+        const doc = docs[0];
+        cell.className = 'cal-cell available';
+        cell.style.borderLeft = '2px solid ' + doc.color;
+        cell.innerHTML = `<div class="cell-inner avail-cell" style="color:${doc.color}">Liber<br>${doc.short}</div>`;
+        cell.addEventListener('click', () => showAvailModal(doc, ds, hour));
+      }
+
+      grid.appendChild(cell);
+    });
+  });
+}
+
+function showBookingModal(b) {
+  document.getElementById('modalTitle').textContent = 'Programare confirmată';
+  document.getElementById('modalBody').innerHTML = `
+    <div class="modal-doctor-bar">
+      <div class="doctor-avatar" style="background:${b.doctor.color}">${b.doctor.initials}</div>
+      <div>
+        <div class="doctor-name">${b.doctor.name}</div>
+        <div class="doctor-spec">${b.doctor.specialty}</div>
+      </div>
+    </div>
+    <div class="modal-rows">
+      <div class="modal-row"><span class="modal-row-label"><i class="ti ti-user" style="font-size:13px;vertical-align:-1px;margin-right:4px"></i>Pacient</span><span class="modal-row-value">${b.patient}</span></div>
+      <div class="modal-row"><span class="modal-row-label"><i class="ti ti-stethoscope" style="font-size:13px;vertical-align:-1px;margin-right:4px"></i>Serviciu</span><span class="modal-row-value">${b.service.name}</span></div>
+      <div class="modal-row"><span class="modal-row-label"><i class="ti ti-clock" style="font-size:13px;vertical-align:-1px;margin-right:4px"></i>Durată</span><span class="modal-row-value">${b.service.duration} minute</span></div>
+      <div class="modal-row"><span class="modal-row-label"><i class="ti ti-calendar" style="font-size:13px;vertical-align:-1px;margin-right:4px"></i>Data</span><span class="modal-row-value">${b.date}</span></div>
+      <div class="modal-row"><span class="modal-row-label"><i class="ti ti-clock-hour-4" style="font-size:13px;vertical-align:-1px;margin-right:4px"></i>Ora</span><span class="modal-row-value">${b.time}</span></div>
+      <div class="modal-row"><span class="modal-row-label"><i class="ti ti-coin" style="font-size:13px;vertical-align:-1px;margin-right:4px"></i>Preț</span><span class="modal-row-value price-tag">${b.service.price} RON</span></div>
+      <div class="modal-row"><span class="modal-row-label">Status</span><span class="status-badge status-confirmed">Confirmat</span></div>
+    </div>
+    <button class="modal-action" onclick="closeModal()">Închide</button>
+  `;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function showAvailModal(doc, ds, hour) {
+  const svc = SERVICES.filter(s => s.doctorId === doc.id || s.doctorId === null)[0];
+  document.getElementById('modalTitle').textContent = 'Slot disponibil';
+  document.getElementById('modalBody').innerHTML = `
+    <div class="modal-doctor-bar">
+      <div class="doctor-avatar" style="background:${doc.color}">${doc.initials}</div>
+      <div>
+        <div class="doctor-name">${doc.name}</div>
+        <div class="doctor-spec">${doc.specialty}</div>
+      </div>
+    </div>
+    <div class="modal-rows">
+      <div class="modal-row"><span class="modal-row-label"><i class="ti ti-calendar" style="font-size:13px;vertical-align:-1px;margin-right:4px"></i>Data</span><span class="modal-row-value">${ds}</span></div>
+      <div class="modal-row"><span class="modal-row-label"><i class="ti ti-clock" style="font-size:13px;vertical-align:-1px;margin-right:4px"></i>Ora</span><span class="modal-row-value">${String(hour).padStart(2,'0')}:00</span></div>
+      <div class="modal-row"><span class="modal-row-label"><i class="ti ti-stethoscope" style="font-size:13px;vertical-align:-1px;margin-right:4px"></i>Serviciu sugerat</span><span class="modal-row-value">${svc.name}</span></div>
+      <div class="modal-row"><span class="modal-row-label"><i class="ti ti-coin" style="font-size:13px;vertical-align:-1px;margin-right:4px"></i>Preț</span><span class="modal-row-value price-tag">${svc.price} RON</span></div>
+      <div class="modal-row"><span class="modal-row-label">Status</span><span class="status-badge status-available">Disponibil</span></div>
+    </div>
+    <button class="modal-action" onclick="closeModal()">Închide</button>
+  `;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+
+document.getElementById('prevBtn').addEventListener('click', () => { weekOffset--; render(); });
+document.getElementById('nextBtn').addEventListener('click', () => { weekOffset++; render(); });
+document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === document.getElementById('modalOverlay')) closeModal(); });
+
+render();
+</script>
+</body>
+</html>
