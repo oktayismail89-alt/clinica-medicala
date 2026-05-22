@@ -177,7 +177,8 @@ async function loadData() {
   try {
     const ws=weekStart(weekOffset), we=new Date(ws);
     we.setDate(we.getDate()+6);
-    const df=ws.toISOString().split('T')[0], dt=we.toISOString().split('T')[0];
+    const df=ws.getFullYear()+'-'+String(ws.getMonth()+1).padStart(2,'0')+'-'+String(ws.getDate()).padStart(2,'0');
+    const dt=we.getFullYear()+'-'+String(we.getMonth()+1).padStart(2,'0')+'-'+String(we.getDate()).padStart(2,'0');
     [doctors,appointments,slots]=await Promise.all([
       sb('doctors','select=*&order=specialty.asc'),
       sb('appointments',`select=*,doctors(name,specialty),services(name,price_ron,duration_min)&date=gte.${df}&date=lte.${dt}&order=date.asc,start_time.asc`),
@@ -228,7 +229,7 @@ function render(ws,we) {
   hours.forEach(hour=>{
     const tl=document.createElement('div');tl.className='time-label';tl.textContent=String(hour).padStart(2,'0')+':00';grid.appendChild(tl);
     days.forEach(day=>{
-      const ds=day.toISOString().split('T')[0];
+      const ds=day.getFullYear()+'-'+String(day.getMonth()+1).padStart(2,'0')+'-'+String(day.getDate()).padStart(2,'0');
       const cell=document.createElement('div');
       const appt=appointments.find(a=>{
         if(activeFilter!==-1&&a.doctor_id!==activeFilter)return false;
