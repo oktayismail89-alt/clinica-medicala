@@ -181,7 +181,7 @@ async function loadData() {
     const dt=we.getFullYear()+'-'+String(we.getMonth()+1).padStart(2,'0')+'-'+String(we.getDate()).padStart(2,'0');
     [doctors,appointments,slots]=await Promise.all([
       sb('doctors','select=*&order=specialty.asc'),
-      sb('appointments',`select=*,doctors(name,specialty),services(name,price_ron,duration_min)&date=gte.${df}&date=lte.${dt}&order=date.asc,start_time.asc`),
+      sb('appointments',`select=*,doctors(name,specialty),services(name,price_ron,duration_min)&date=gte.${df}&date=lte.${dt}&status=eq.confirmed&order=date.asc,start_time.asc`),
       sb('available_slots',`select=*,doctors(name,specialty)&is_available=eq.true&date=gte.${df}&date=lte.${dt}&order=date.asc,start_time.asc`)
     ]);
     render(ws,we);
